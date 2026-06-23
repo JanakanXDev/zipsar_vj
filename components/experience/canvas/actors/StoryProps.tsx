@@ -1,9 +1,9 @@
 "use client";
 
 import { useMemo, useRef, useEffect } from "react";
-import { useFrame, useLoader } from "@react-three/fiber";
+import { useFrame } from "@react-three/fiber";
 import * as THREE from "three";
-import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
+import { useGLTF } from "@react-three/drei";
 
 /**
  * Placeholder story props for the Prologue camera journey

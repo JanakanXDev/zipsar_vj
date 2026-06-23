@@ -83,25 +83,6 @@ body::before {
   }
 }
 
-/* ──────────────── SECTION TRANSITION BLEED ────────────────
-   Gradient bleeds between sections for seamless atmospheric flow. */
-
-section + section {
-  position: relative;
-}
-
-section + section::before {
-  content: "";
-  position: absolute;
-  top: -3rem;
-  left: 0;
-  right: 0;
-  height: 6rem;
-  pointer-events: none;
-  z-index: 0;
-  background: linear-gradient(to bottom, transparent, var(--color-void), transparent);
-}
-
 /* ──────────────── CUSTOM CURSOR ────────────────
    Added by CustomCursor.tsx on pointer-fine, motion-ok devices only.
    Hides the native pointer while the dot + ring overlay is active. */

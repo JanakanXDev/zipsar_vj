@@ -5,12 +5,11 @@ import { useFrame } from "@react-three/fiber";
 import { Center, Environment, Float, MeshTransmissionMaterial, Text3D } from "@react-three/drei";
 import * as THREE from "three";
 import { useExperienceStore } from "@/stores/experienceStore";
-import { prologue } from "@/content/contentBible";
 import { useQualityTier } from "@/hooks/useQualityTier";
 
 export function LiquidHeadline() {
   const groupRef = useRef<THREE.Group>(null);
-  const materialRef = useRef<any>(null);
+  const materialRef = useRef<THREE.Material>(null);
   const lightRef = useRef<THREE.PointLight>(null);
   
   // Performance: Get GPU tier to scale heavy material properties

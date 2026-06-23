@@ -53,7 +53,6 @@ export function SparkSection() {
       const intro = gsap.timeline({ defaults: { ease: EASE.arrive } });
       intro
         .from(".js-spark-overline", { autoAlpha: 0, y: 16, duration: 0.6 })
-        .from(".js-spark-tagline", { autoAlpha: 0, y: 22, duration: 0.7 }, "<0.45")
         .from(".js-spark-eyebrow-line", { scaleX: 0, transformOrigin: "left center", duration: 0.9, ease: EASE.drift }, "<0.2");
 
       /* SCROLL — drives the camera (via the store) and reveals the scene
@@ -77,7 +76,9 @@ export function SparkSection() {
 
       tl.to(".js-spark-cue", { autoAlpha: 0, duration: 0.4 })
         .from(".js-rail-fill", { scaleY: 0, duration: 3, ease: "none" }, "<")
-        .from(".js-scene-stage", { autoAlpha: 0.2, x: 12, duration: 0.5, stagger: 0.4 }, "<");
+        .from(".js-scene-stage", { autoAlpha: 0.2, x: 12, duration: 0.5, stagger: 0.4 }, "<")
+        // "Ideas Beyond Dreams" animates in here, after the user has scrolled a bit into the scene
+        .from(".js-spark-tagline", { autoAlpha: 0, y: 30, scale: 0.95, duration: 0.8, ease: EASE.arrive }, ">-0.1");
 
       lineSplits.forEach((split, index) => {
         tl.from(

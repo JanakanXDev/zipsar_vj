@@ -33,22 +33,13 @@ const SCENE_STAGES = ["Space", "Earth", "Cities", "Dreamers"] as const;
 
 export function SparkSection() {
   const sectionRef = useRef<HTMLDivElement>(null);
-  const headlineRef = useRef<HTMLHeadingElement>(null);
 
   useGsap(
     () => {
       const section = sectionRef.current;
-      const headline = headlineRef.current;
-      if (!section || !headline) return;
+      if (!section) return;
 
       const bridge = useExperienceStore.getState();
-
-      /* Character animation (scene titles only, §6.5). */
-      const headlineSplit = SplitText.create(headline, {
-        type: "chars,words",
-        mask: "chars",
-        aria: "auto",
-      });
 
       /* Word reveals for narration — text stays in the DOM (SEO) and is
          exposed to AT via aria:"auto". */
@@ -62,11 +53,6 @@ export function SparkSection() {
       const intro = gsap.timeline({ defaults: { ease: EASE.arrive } });
       intro
         .from(".js-spark-overline", { autoAlpha: 0, y: 16, duration: 0.6 })
-        .from(
-          headlineSplit.chars,
-          { yPercent: 110, stagger: STAGGER.words / 2, duration: 1.1 },
-          "<0.1",
-        )
         .from(".js-spark-tagline", { autoAlpha: 0, y: 22, duration: 0.7 }, "<0.45")
         .from(".js-spark-eyebrow-line", { scaleX: 0, transformOrigin: "left center", duration: 0.9, ease: EASE.drift }, "<0.2");
 
@@ -115,7 +101,6 @@ export function SparkSection() {
 
       return () => {
         intro.kill();
-        headlineSplit.revert();
         lineSplits.forEach((split) => split.revert());
       };
     },
@@ -183,8 +168,7 @@ export function SparkSection() {
 
             <h1
               id={`${prologue.id}-title`}
-              ref={headlineRef}
-              className="text-display-xxl font-bold text-liquid-glass"
+              className="sr-only"
             >
               {prologue.sceneTitle}
             </h1>

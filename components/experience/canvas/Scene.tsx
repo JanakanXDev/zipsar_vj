@@ -6,6 +6,7 @@ import { Starfield } from "./actors/Starfield";
 import { GalaxyParticles } from "./actors/GalaxyParticles";
 import { FloatingParticles } from "./actors/FloatingParticles";
 import { StoryProps } from "./actors/StoryProps";
+import { LiquidHeadline } from "./actors/LiquidHeadline";
 
 /**
  * The cosmic world — one continuous scene the camera travels through
@@ -42,6 +43,7 @@ export function Scene({ tier }: { tier: QualityTier }) {
         position={[0, 1, 0]}
       />
 
+      <LiquidHeadline />
       <CameraRig />
       <Starfield tier={tier} />
       <GalaxyParticles tier={tier} />

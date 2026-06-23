@@ -1,0 +1,191 @@
+@import "tailwindcss";
+@import "./tokens.css";
+@import "./utilities.css";
+@import "./v1-tokens.css";
+
+/* ──────────────── GLOBAL THEME ──────────────── */
+
+html {
+  color-scheme: dark;
+  scroll-behavior: smooth;
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-line-bright) transparent;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  background-color: var(--color-void);
+  color: var(--color-foreground);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+h1,
+h2,
+h3,
+h4 {
+  text-wrap: balance;
+}
+
+p {
+  text-wrap: pretty;
+}
+
+::selection {
+  background-color: var(--color-neon-purple);
+  color: var(--color-void);
+}
+
+/* ──────────────── SCROLLBAR (WebKit) ──────────────── */
+
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-line-bright);
+  border-radius: 999px;
+  border: 3px solid var(--color-void);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-faint);
+}
+
+/* ──────────────── CUSTOM CURSOR ────────────────
+   Added by CustomCursor.tsx on pointer-fine, motion-ok devices only.
+   Hides the native pointer while the dot + ring overlay is active. */
+
+html.has-custom-cursor,
+html.has-custom-cursor * {
+  cursor: none !important;
+}
+
+/* ──────────────── FOCUS (Blueprint §8.4) ────────────────
+   Visible focus for keyboard users — never suppressed. */
+
+:focus-visible {
+  outline: var(--focus-ring-width) solid var(--focus-ring-color);
+  outline-offset: var(--focus-ring-offset);
+}
+
+/* ──────────────── MOTION SAFETY FLOOR (Blueprint §8.2) ────────────────
+   GSAP variants are handled by gsap.matchMedia(); this covers all
+   CSS-driven motion. */
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* ──────────────── NEON BORDER TRACE ────────────────
+   A light that travels the card edge on hover (Step 11 service cards,
+   Blueprint §4.5 "neon border trace"). Conic gradient masked to a 1px
+   ring; angle animated via @property. Inert under reduced motion. */
+
+@property --trace-angle {
+  syntax: "<angle>";
+  inherits: false;
+  initial-value: 0deg;
+}
+
+.neon-border-trace::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1px;
+  pointer-events: none;
+  background: conic-gradient(
+    from var(--trace-angle),
+    transparent 0deg,
+    var(--color-neon-blue) 55deg,
+    var(--color-neon-purple) 110deg,
+    transparent 165deg
+  );
+  -webkit-mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  opacity: 0;
+  transition: opacity 0.4s var(--ease-arrive);
+}
+
+.neon-border-trace:hover::before {
+  opacity: 1;
+  animation: border-trace 2.6s linear infinite;
+}
+
+@keyframes border-trace {
+  to {
+    --trace-angle: 360deg;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .neon-border-trace:hover::before {
+    animation: none;
+    opacity: 0;
+  }
+}
+
+/* ──────────────── SECTION 4 — Act 2 step indicators ────────────────
+   Toggled by the horizontal scroll's onUpdate (no React re-render). */
+
+.js-act2-step {
+  border-color: var(--color-line);
+  color: var(--color-faint);
+  transition:
+    color 0.35s var(--ease-arrive),
+    border-color 0.35s var(--ease-arrive),
+    box-shadow 0.35s var(--ease-arrive);
+}
+
+.js-act2-step.is-active {
+  border-color: var(--color-neon-blue);
+  color: var(--color-neon-blue-soft);
+  box-shadow: var(--shadow-glow-blue);
+}
+
+/* ──────────────── FORCED COLORS (Blueprint §8.5) ────────────────
+   Windows High Contrast: drop decorative glass/glow, let system
+   colors take over. */
+
+@media (forced-colors: active) {
+  .glass,
+  .glass-strong,
+  .glass-subtle {
+    background: Canvas;
+    border: 1px solid CanvasText;
+    box-shadow: none;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
+
+  .neon-text-blue,
+  .neon-text-purple,
+  .neon-text-green,
+  .text-aurora {
+    background: none;
+    color: CanvasText;
+    text-shadow: none;
+  }
+}

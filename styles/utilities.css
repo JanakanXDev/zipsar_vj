@@ -1,0 +1,139 @@
+/*
+ * ═══════════════════════════════════════════════════════════════════
+ *  ZIPSAR UTILITY CLASSES — Tailwind v4 @utility layer.
+ *  Composable effects built exclusively from tokens.css.
+ *  All utilities respect variants (hover:, md:, etc.) automatically.
+ * ═══════════════════════════════════════════════════════════════════
+ */
+
+/* ──────────────── GLASSMORPHISM ────────────────
+   Compose with rounded-panel / p-* / max-w-*.
+   Falls back to opaque surface where backdrop-filter is unsupported. */
+
+@utility glass {
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--glass-highlight), var(--shadow-panel);
+  backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
+  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
+
+  @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+    background: var(--color-surface);
+  }
+}
+
+@utility glass-strong {
+  background: var(--glass-bg-strong);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--glass-highlight), var(--shadow-panel);
+  backdrop-filter: blur(var(--glass-blur-strong)) saturate(var(--glass-saturate));
+  -webkit-backdrop-filter: blur(var(--glass-blur-strong)) saturate(var(--glass-saturate));
+
+  @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+    background: var(--color-raised);
+  }
+}
+
+@utility glass-subtle {
+  background: var(--glass-bg-subtle);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--glass-highlight);
+  backdrop-filter: blur(var(--glass-blur-subtle)) saturate(var(--glass-saturate));
+  -webkit-backdrop-filter: blur(var(--glass-blur-subtle)) saturate(var(--glass-saturate));
+
+  @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+    background: var(--color-surface);
+  }
+}
+
+/* ──────────────── NEON TEXT ────────────────
+   Accent color + layered glow. Large/display text only —
+   body copy uses the -soft color tokens without glow (§8.5). */
+
+@utility neon-text-blue {
+  color: var(--color-neon-blue);
+  text-shadow:
+    0 0 6px rgba(0, 191, 255, 0.55),
+    0 0 24px rgba(0, 191, 255, 0.25);
+}
+
+@utility neon-text-purple {
+  color: var(--color-neon-purple);
+  text-shadow:
+    0 0 6px rgba(167, 139, 250, 0.55),
+    0 0 24px rgba(167, 139, 250, 0.25);
+}
+
+@utility neon-text-green {
+  color: var(--color-neon-green);
+  text-shadow:
+    0 0 6px rgba(52, 211, 153, 0.55),
+    0 0 24px rgba(52, 211, 153, 0.25);
+}
+
+/* ──────────────── NEON EDGES ────────────────
+   Glowing borders for panels, chips, and CTAs. Self-contained. */
+
+@utility neon-edge-blue {
+  border: 1px solid color-mix(in srgb, var(--color-neon-blue) 45%, transparent);
+  box-shadow: var(--shadow-glow-blue);
+}
+
+@utility neon-edge-purple {
+  border: 1px solid color-mix(in srgb, var(--color-neon-purple) 45%, transparent);
+  box-shadow: var(--shadow-glow-purple);
+}
+
+@utility neon-edge-green {
+  border: 1px solid color-mix(in srgb, var(--color-neon-green) 45%, transparent);
+  box-shadow: var(--shadow-glow-green);
+}
+
+/* ──────────────── AURORA GRADIENT TEXT ────────────────
+   The full neon spectrum in one headline. Display sizes only. */
+
+@utility text-aurora {
+  background: linear-gradient(
+    100deg,
+    var(--color-neon-blue) 0%,
+    var(--color-neon-purple) 50%,
+    var(--color-neon-green) 100%
+  );
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+}
+
+/* ──────────────── OVERLINE LABEL ────────────────
+   Eyebrow text above headings: "PROLOGUE", "ACT 1", … */
+
+@utility overline-label {
+  font-size: var(--text-label);
+  line-height: var(--text-label--line-height);
+  letter-spacing: var(--text-label--letter-spacing);
+  font-weight: var(--text-label--font-weight);
+  text-transform: uppercase;
+  color: var(--color-faint);
+}
+
+/* ──────────────── HAIRLINE DIVIDER ────────────────
+   A 1px line that fades at both ends. */
+
+@utility hairline {
+  height: 1px;
+  border: none;
+  background: linear-gradient(90deg, transparent, var(--color-line-bright), transparent);
+}
+
+/* ──────────────── NEBULA BACKDROP ────────────────
+   Pure-CSS cosmic poster: renders instantly (Blueprint §9.2),
+   serves as the reduced-motion / no-WebGL stand-in for the canvas. */
+
+@utility bg-nebula {
+  background-color: var(--color-void);
+  background-image:
+    radial-gradient(ellipse 60% 45% at 18% 10%, rgba(0, 191, 255, 0.09), transparent 60%),
+    radial-gradient(ellipse 55% 50% at 82% 25%, rgba(167, 139, 250, 0.1), transparent 60%),
+    radial-gradient(ellipse 65% 55% at 50% 95%, rgba(52, 211, 153, 0.06), transparent 60%),
+    radial-gradient(ellipse 90% 70% at 50% 50%, rgba(18, 18, 28, 0.55), transparent);
+}

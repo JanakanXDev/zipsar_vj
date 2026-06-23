@@ -1,0 +1,38 @@
+/*
+ * ═══════════════════════════════════════════════════════════════════
+ *  ZIPSAR V1.0 — CINEMATIC DESIGN TOKENS (parallel /v1 experience)
+ *
+ *  Per FINAL CREATIVE DIRECTION v1.0: pure black, white text, ONE accent
+ *  used sparingly. Premium / Apple / Stripe / Linear / Interstellar.
+ *
+ *  ADDITIVE ONLY — these tokens do not alter the existing (neon) design
+ *  system, so the current homepage is untouched. V1 components use the
+ *  `*-ink / *-paper / *-accent` utilities; the legacy site keeps `void /
+ *  neon-*`. Isolation is by usage.
+ * ═══════════════════════════════════════════════════════════════════
+ */
+
+@theme {
+  /* ──────────────── V1 COLOR ──────────────── */
+  --color-ink: #050505; /* page background — pure black */
+  --color-ink-raised: #0c0d0f; /* card / panel surface, barely lifted */
+  --color-ink-line: #141417; /* solid divider on black */
+
+  --color-paper: #ffffff; /* primary text */
+  --color-paper-dim: rgba(255, 255, 255, 0.7); /* secondary text */
+  --color-paper-faint: rgba(255, 255, 255, 0.45); /* tertiary / labels */
+
+  --color-accent: #4fd1ff; /* the ONE accent — used sparingly */
+
+  --color-hairline: rgba(255, 255, 255, 0.08); /* default border */
+  --color-hairline-strong: rgba(255, 255, 255, 0.16); /* emphasized border */
+
+  /* ──────────────── V1 LAYOUT ──────────────── */
+  --container-v1: 72rem; /* → max-w-v1 — premium reading width */
+  --container-v1-text: 44rem; /* → max-w-v1-text — editorial column */
+}
+
+:root {
+  /* Generous, premium section rhythm (consumed via arbitrary py-[...]). */
+  --space-v1-section: clamp(7rem, 16vh, 13rem);
+}

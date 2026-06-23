@@ -3,8 +3,7 @@
 import { useMemo, useRef, useEffect } from "react";
 import { useFrame, useLoader } from "@react-three/fiber";
 import * as THREE from "three";
-import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
-import { useExperienceStore } from "@/stores/experienceStore";
+import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
 
 /**
  * Placeholder story props for the Prologue camera journey
@@ -74,7 +73,7 @@ function EarthPlaceholder() {
 
   return (
     <group ref={ref} position={[0, -0.4, -18]}>
-      <hemisphereLight skyColor="#a8c8ff" groundColor="#101820" intensity={0.35} />
+      <hemisphereLight color="#a8c8ff" groundColor="#101820" intensity={0.35} />
       <directionalLight position={[6, 10, 4]} intensity={0.8} color="#ffffff" />
       <pointLight position={[0.6, 1.2, -16]} intensity={0.9} distance={30} color="#ffffff" />
       <primitive object={earthScene} dispose={null} />
@@ -125,7 +124,7 @@ function CityPlaceholder() {
   return (
     <group ref={ref} position={[0, 0, -38]} rotation={[0, 0.4, 0]}>
       <ambientLight intensity={0.2} color="#ffffff" />
-      <hemisphereLight skyColor="#accfff" groundColor="#101820" intensity={0.25} />
+      <hemisphereLight color="#accfff" groundColor="#101820" intensity={0.25} />
       <directionalLight position={[5, 10, -20]} intensity={1.1} color="#f7f1e0" />
       <pointLight position={[-3, 4, -34]} intensity={0.55} distance={34} color="#77b3ff" />
       <pointLight position={[4, 3, -36]} intensity={0.55} distance={34} color="#ffb070" />

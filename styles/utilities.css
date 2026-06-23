@@ -135,30 +135,21 @@
 }
 
 /* ──────────────── LIQUID GLASS TEXT ────────────────
-   Translucent font with a glossy, reflective bevel and icy grid refraction. */
+   Completely transparent glass with glossy edges. */
 
 @utility text-liquid-glass {
-  background: 
-    /* Grid texture for refraction effect */
-    repeating-linear-gradient(0deg, transparent, transparent 6px, rgba(255, 255, 255, 0.15) 6px, rgba(255, 255, 255, 0.15) 7px),
-    repeating-linear-gradient(90deg, transparent, transparent 6px, rgba(255, 255, 255, 0.15) 6px, rgba(255, 255, 255, 0.15) 7px),
-    /* Icy liquid gradient */
-    linear-gradient(
-      180deg,
-      rgba(220, 245, 255, 1) 0%,
-      rgba(120, 200, 255, 0.6) 25%,
-      rgba(0, 80, 180, 0.15) 60%,
-      rgba(150, 220, 255, 0.9) 100%
-    );
-  background-clip: text;
-  -webkit-background-clip: text;
+  /* No solid fill, purely transparent */
+  background: transparent;
   color: transparent;
-  /* Complex layering for bevel and glow */
+  
+  /* Bright, glossy edge to define the text boundaries */
+  -webkit-text-stroke: 1.5px rgba(255, 255, 255, 0.85);
+  
+  /* Layered shadows for 3D thickness (specular + ambient) */
   text-shadow: 
-    0px 2px 3px rgba(255, 255, 255, 0.8),    /* Top inner specular highlight */
-    0px -1px 2px rgba(0, 50, 150, 0.9),      /* Bottom inner shadow */
-    0px 4px 16px rgba(0, 150, 255, 0.35);    /* Soft outer ambient blue glow */
-  -webkit-text-stroke: 1.5px rgba(20, 100, 200, 0.7); /* Deep blue outer glassy edge */
+    2px 2px 4px rgba(0, 0, 0, 0.6),           /* Dark drop shadow for thickness */
+    -1px -1px 2px rgba(255, 255, 255, 0.5),   /* Highlight reflection */
+    0px 8px 24px rgba(255, 255, 255, 0.15);   /* Soft ambient glow */
 }
 
 /* ──────────────── SHIMMER AURORA ────────────────

@@ -64,10 +64,11 @@ export function SparkSection() {
         .from(".js-spark-overline", { autoAlpha: 0, y: 16, duration: 0.6 })
         .from(
           headlineSplit.chars,
-          { yPercent: 110, stagger: STAGGER.words / 2, duration: 1 },
+          { yPercent: 110, stagger: STAGGER.words / 2, duration: 1.1 },
           "<0.1",
         )
-        .from(".js-spark-tagline", { autoAlpha: 0, y: 22, duration: 0.7 }, "<0.45");
+        .from(".js-spark-tagline", { autoAlpha: 0, y: 22, duration: 0.7 }, "<0.45")
+        .from(".js-spark-eyebrow-line", { scaleX: 0, transformOrigin: "left center", duration: 0.9, ease: EASE.drift }, "<0.2");
 
       /* SCROLL — drives the camera (via the store) and reveals the scene
          rail, narration, and CTA as the pinned section is scrubbed. */
@@ -123,9 +124,23 @@ export function SparkSection() {
   );
 
   return (
-    <Section id={prologue.id} labelledBy={`${prologue.id}-title`} flush className="relative">
+    <Section id={prologue.id} labelledBy={`${prologue.id}-title`} flush className="relative section-atmo-prologue">
       <div ref={sectionRef}>
         <div className="relative flex min-h-svh items-center">
+
+          {/* Depth layer: large faint brand name watermark */}
+          <div
+            aria-hidden="true"
+            className="pointer-events-none absolute inset-0 flex items-center justify-center overflow-hidden select-none"
+          >
+            <span
+              className="text-aurora whitespace-nowrap font-bold opacity-[0.025] select-none"
+              style={{ fontSize: "clamp(6rem, 20vw, 22rem)", letterSpacing: "-0.04em" }}
+            >
+              {brand.name}
+            </span>
+          </div>
+
           {/* Scene-journey rail — desktop only */}
           <div
             aria-hidden="true"
@@ -136,47 +151,81 @@ export function SparkSection() {
                 <div className="js-rail-fill from-neon-blue via-neon-purple to-neon-green absolute inset-0 origin-top bg-gradient-to-b" />
               </div>
               <ul className="flex flex-col justify-between gap-6 py-2">
-                {SCENE_STAGES.map((stage) => (
-                  <li key={stage} className="js-scene-stage overline-label text-neon-blue-soft">
-                    {stage}
+                {SCENE_STAGES.map((stage, i) => (
+                  <li key={stage} className="js-scene-stage flex items-center gap-2.5">
+                    {/* Stage dot */}
+                    <span
+                      className="block size-1.5 rounded-full"
+                      style={{
+                        background: ["var(--color-neon-blue)", "var(--color-neon-blue-soft)", "var(--color-neon-purple-soft)", "var(--color-neon-purple)"][i],
+                      }}
+                    />
+                    <span className="overline-label text-neon-blue-soft">{stage}</span>
                   </li>
                 ))}
               </ul>
             </div>
           </div>
 
-          <Container size="narrative" className="py-24 text-center">
-            <p className="js-spark-overline overline-label tracking-mega mb-6">{brand.name}</p>
+          <Container size="narrative" className="relative z-10 py-24 text-center">
+            {/* Brand eyebrow with animated line */}
+            <div className="mb-8 flex flex-col items-center gap-3">
+              <p className="js-spark-overline overline-label tracking-ultra text-neon-blue-soft/70">
+                {brand.name}
+              </p>
+              <div
+                className="js-spark-eyebrow-line h-px w-16 origin-left"
+                style={{
+                  background: "linear-gradient(90deg, var(--color-neon-blue), var(--color-neon-purple))",
+                }}
+              />
+            </div>
 
-            <h1 id={`${prologue.id}-title`} ref={headlineRef} className="text-display-xl">
+            <h1
+              id={`${prologue.id}-title`}
+              ref={headlineRef}
+              className="text-display-xxl font-bold"
+            >
               {prologue.sceneTitle}
             </h1>
 
-            <p className="js-spark-tagline text-lead mt-6">
-              <GradientText className="font-medium">{brand.tagline}</GradientText>
+            <p className="js-spark-tagline text-lead mt-8">
+              <GradientText className="font-semibold">{brand.tagline}</GradientText>
             </p>
 
-            <div className="mx-auto mt-14 flex max-w-prose flex-col gap-6">
+            <div className="mx-auto mt-16 flex max-w-prose flex-col gap-5">
               <p className="js-spark-line text-lead text-muted">{prologue.narration[0]}</p>
-              <p className="js-spark-line text-lead text-foreground">{prologue.narration[1]}</p>
+              <p className="js-spark-line text-lead text-foreground font-medium">{prologue.narration[1]}</p>
             </div>
 
-            <div className="js-spark-cta mt-14">
+            <div className="js-spark-cta mt-14 flex flex-col items-center gap-4">
               <MagneticButton accent="blue" size="lg" href={`mailto:${extras.contact.email}`}>
                 <span aria-hidden="true">{finale.ctaPrimary.emoji}</span>
                 {finale.ctaPrimary.label}
               </MagneticButton>
+              <p className="overline-label text-faint/60">Scroll to explore ↓</p>
             </div>
           </Container>
 
-          {/* Scroll cue */}
+          {/* Scroll cue — comet animation */}
           <div
             aria-hidden="true"
-            className="js-spark-cue absolute inset-x-0 bottom-8 flex flex-col items-center gap-2"
+            className="js-spark-cue absolute inset-x-0 bottom-8 flex flex-col items-center gap-3"
           >
-            <span className="overline-label text-faint">Scroll</span>
-            <span className="bg-line block h-10 w-px">
-              <span className="animate-glow-pulse bg-neon-blue block h-1/2 w-full" />
+            <span className="overline-label text-faint/50">Scroll</span>
+            {/* Comet track */}
+            <span
+              className="relative block overflow-hidden"
+              style={{ width: "1px", height: "48px", background: "var(--color-line)" }}
+            >
+              {/* Comet head */}
+              <span
+                className="absolute inset-x-0 top-0 block h-1/2 origin-top"
+                style={{
+                  background: "linear-gradient(to bottom, var(--color-neon-blue), transparent)",
+                  animation: "var(--animate-comet)",
+                }}
+              />
             </span>
           </div>
         </div>

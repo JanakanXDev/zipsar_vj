@@ -4,17 +4,16 @@ import { useRef } from "react";
 import { gsap } from "@/lib/gsap";
 import { useGsap } from "@/hooks/useGsap";
 import { useTilt } from "@/hooks/useTilt";
-import { fadeUp, parallax, staggerIn } from "@/components/experience/choreography/animations";
+import { parallax, staggerIn } from "@/components/experience/choreography/animations";
 import { extras, visionMission } from "@/content/contentBible";
 import { Container, GlassCard, Heading, Section } from "@/components/ui";
 
 /**
  * SECTION 2 — Why Zipsar Exists (Vision & Mission).
  *
- * Two glassmorphism cards with: glow (neon edge + cursor-following inner
- * glow), parallax (differential scrub drift for depth), and mouse
- * interaction (3D tilt via useTilt). Copy verbatim from the Content
- * Bible's Vision/Mission statements.
+ * Asymmetric layout: Vision card on the left (dominant), Mission card
+ * on the right (subordinate). Blur reveal on heading. Corner accents,
+ * per-card glow, parallax. Atmosphere: purple-left / green-right bleed.
  */
 
 type Accent = "blue" | "purple" | "green";
@@ -24,12 +23,10 @@ interface CardConfig {
   label: string;
   lines: readonly string[];
   accent: Accent;
-  /** Inner-glow color (matches the accent neon at low alpha). */
   glow: string;
-  /** Label tint. */
   labelClass: string;
-  /** Differential parallax depth factor. */
   parallaxSpeed: number;
+  cornerColor: string;
 }
 
 const CARDS: CardConfig[] = [
@@ -41,6 +38,7 @@ const CARDS: CardConfig[] = [
     glow: "rgba(167, 139, 250, 0.22)",
     labelClass: "text-neon-purple-soft",
     parallaxSpeed: 0.12,
+    cornerColor: "var(--color-neon-purple)",
   },
   {
     key: "mission",
@@ -50,14 +48,18 @@ const CARDS: CardConfig[] = [
     glow: "rgba(52, 211, 153, 0.2)",
     labelClass: "text-neon-green-soft",
     parallaxSpeed: 0.04,
+    cornerColor: "var(--color-neon-green)",
   },
 ];
 
-function VisionMissionCard({ config }: { config: CardConfig }) {
-  const tiltRef = useTilt<HTMLDivElement>({ max: 7 });
+function VisionMissionCard({ config, large = false }: { config: CardConfig; large?: boolean }) {
+  const tiltRef = useTilt<HTMLDivElement>({ max: 6 });
 
   return (
-    <li className="js-why-card list-none [perspective:1200px]" data-parallax={config.parallaxSpeed}>
+    <li
+      className="js-why-card list-none [perspective:1200px]"
+      data-parallax={config.parallaxSpeed}
+    >
       <div ref={tiltRef} className="h-full will-change-transform">
         <GlassCard
           as="article"
@@ -66,6 +68,7 @@ function VisionMissionCard({ config }: { config: CardConfig }) {
           padding="lg"
           className="relative h-full overflow-hidden"
         >
+          {/* Cursor-following inner glow */}
           <span
             aria-hidden="true"
             className="pointer-events-none absolute inset-0"
@@ -75,12 +78,49 @@ function VisionMissionCard({ config }: { config: CardConfig }) {
               transition: "opacity 0.4s var(--ease-arrive)",
             }}
           />
+
+          {/* Corner accents */}
+          <span
+            aria-hidden="true"
+            className="pointer-events-none absolute left-4 top-4 size-6"
+            style={{
+              borderTop: `1.5px solid ${config.cornerColor}`,
+              borderLeft: `1.5px solid ${config.cornerColor}`,
+              borderRadius: "3px 0 0 0",
+              opacity: 0.5,
+            }}
+          />
+          <span
+            aria-hidden="true"
+            className="pointer-events-none absolute bottom-4 right-4 size-6"
+            style={{
+              borderBottom: `1.5px solid ${config.cornerColor}`,
+              borderRight: `1.5px solid ${config.cornerColor}`,
+              borderRadius: "0 0 3px 0",
+              opacity: 0.5,
+            }}
+          />
+
           <div className="relative flex flex-col gap-5">
-            <p className={`overline-label ${config.labelClass}`}>{config.label}</p>
+            <div className="flex items-center gap-3">
+              <p className={`overline-label ${config.labelClass}`}>{config.label}</p>
+              {/* Label line accent */}
+              <span
+                className="h-px flex-1 opacity-30"
+                style={{ background: config.cornerColor }}
+                aria-hidden="true"
+              />
+            </div>
             {config.lines.map((line, index) => (
               <p
                 key={line}
-                className={index === 0 ? "text-display text-foreground" : "text-lead text-muted"}
+                className={
+                  index === 0
+                    ? large
+                      ? "text-display-lg text-foreground"
+                      : "text-display text-foreground"
+                    : "text-lead text-muted"
+                }
               >
                 {line}
               </p>
@@ -100,9 +140,23 @@ export function WhySection() {
       const scope = scopeRef.current;
       if (!scope) return;
 
-      fadeUp(".js-why-head", { scrollTrigger: { trigger: scope, start: "top 78%" } });
+      /* Blur reveal on heading instead of simple fadeUp */
+      gsap.fromTo(
+        ".js-why-head",
+        { autoAlpha: 0, y: 32, filter: "blur(8px)" },
+        {
+          autoAlpha: 1,
+          y: 0,
+          filter: "blur(0px)",
+          duration: 1,
+          ease: "power3.out",
+          scrollTrigger: { trigger: scope, start: "top 78%" },
+        },
+      );
+
       staggerIn(".js-why-card", {
-        each: 0.15,
+        each: 0.18,
+        distance: 48,
         scrollTrigger: { trigger: scope, start: "top 62%" },
       });
 
@@ -115,20 +169,25 @@ export function WhySection() {
   );
 
   return (
-    <Section id={visionMission.id} labelledBy={`${visionMission.id}-title`}>
+    <Section id={visionMission.id} labelledBy={`${visionMission.id}-title`} className="section-atmo-why">
       <div ref={scopeRef}>
         <Container size="wide">
           <div className="js-why-head max-w-narrative mx-auto text-center">
             <Heading level={2} id={`${visionMission.id}-title`} size="lg">
               {extras.whyOverline}
             </Heading>
-            <div className="hairline mx-auto mt-8 w-40" />
+            {/* Centered hairline divider */}
+            <div className="mx-auto mt-6 flex items-center gap-4">
+              <div className="hairline flex-1" />
+              <span className="text-neon-purple-soft text-lg" aria-hidden="true">◆</span>
+              <div className="hairline flex-1" />
+            </div>
           </div>
 
-          <ul role="list" className="mt-16 grid gap-8 md:grid-cols-2">
-            {CARDS.map((config) => (
-              <VisionMissionCard key={config.key} config={config} />
-            ))}
+          {/* Asymmetric layout: Vision (2fr) | Mission (1fr) */}
+          <ul role="list" className="mt-16 grid gap-6 lg:grid-cols-[3fr_2fr]">
+            <VisionMissionCard config={CARDS[0]!} large />
+            <VisionMissionCard config={CARDS[1]!} />
           </ul>
         </Container>
       </div>

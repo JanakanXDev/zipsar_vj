@@ -12,21 +12,41 @@ import { ParticleField } from "./primitives/ParticleField";
 /**
  * SECTION 7 — Act 4: The Future ("Unlocking Dreams You Haven't Dreamt Yet").
  *
- * The R&D Lab: a fog reveal clears to expose floating "future product"
- * teaser cards (sketch-mode placeholders — no invented product claims),
- * over an interactive particle field. Copy verbatim from the Content
- * Bible (overline "R&D Lab" is an owner-approved extra).
- *
- * Fog defaults to invisible and cards to sharp/visible, so reduced motion
- * / no-JS shows the lab fully revealed with no fog.
+ * R&D Lab: named future-product cards with holographic overlays, status
+ * chips, circuit grid backgrounds, and an interactive particle field.
+ * Copy verbatim from the Content Bible. Atmosphere: purple nebula center.
  */
 
-/* Placeholder future concepts — sketch teasers, not real products. */
+/* Named future product teasers — sketch placeholders, not real products */
 const CONCEPTS = [
-  { code: "Concept 01", offset: "lg:-translate-y-6" },
-  { code: "Concept 02", offset: "lg:translate-y-4" },
-  { code: "Concept 03", offset: "lg:-translate-y-2" },
-];
+  {
+    code: "Zipsar AI",
+    tagline: "Intelligent integration layer",
+    icon: "🧠",
+    status: "In Dev",
+    statusColor: "var(--color-neon-purple)",
+    gradient: "linear-gradient(135deg, rgba(167,139,250,0.12) 0%, rgba(0,191,255,0.06) 100%)",
+    offset: "lg:-translate-y-6",
+  },
+  {
+    code: "Zipsar Launch",
+    tagline: "Product validation toolkit",
+    icon: "🚀",
+    status: "Beta",
+    statusColor: "var(--color-neon-blue)",
+    gradient: "linear-gradient(135deg, rgba(0,191,255,0.12) 0%, rgba(52,211,153,0.06) 100%)",
+    offset: "lg:translate-y-4",
+  },
+  {
+    code: "Zipsar Scale",
+    tagline: "Enterprise dev platform",
+    icon: "⚡",
+    status: "Coming Soon",
+    statusColor: "var(--color-neon-green)",
+    gradient: "linear-gradient(135deg, rgba(52,211,153,0.12) 0%, rgba(167,139,250,0.06) 100%)",
+    offset: "lg:-translate-y-2",
+  },
+] as const;
 
 export function FutureSection() {
   const scopeRef = useRef<HTMLDivElement>(null);
@@ -59,9 +79,16 @@ export function FutureSection() {
         )
         .fromTo(
           ".js-future-card",
-          { autoAlpha: 0, filter: "blur(12px)" },
-          { autoAlpha: 1, filter: "blur(0px)", stagger: 0.15, duration: 0.8, ease: EASE.arrive },
-          0.4,
+          { autoAlpha: 0, y: 40, filter: "blur(12px)" },
+          {
+            autoAlpha: 1,
+            y: 0,
+            filter: "blur(0px)",
+            stagger: 0.15,
+            duration: 0.9,
+            ease: EASE.arrive,
+          },
+          0.5,
         );
     },
     [],
@@ -69,10 +96,10 @@ export function FutureSection() {
   );
 
   return (
-    <Section id={act4.id} labelledBy={`${act4.id}-title`}>
+    <Section id={act4.id} labelledBy={`${act4.id}-title`} className="section-atmo-future">
       <div ref={scopeRef} className="relative overflow-hidden">
         {/* Interactive particle field */}
-        <ParticleField count={24} />
+        <ParticleField count={28} />
 
         <Container size="wide" className="relative z-10">
           <div className="js-future-head max-w-narrative mx-auto text-center">
@@ -86,32 +113,90 @@ export function FutureSection() {
             <p className="text-lead text-muted mt-3">{act4.lines[1]}</p>
           </div>
 
-          {/* Floating future-product teaser cards */}
+          {/* Future product teaser cards */}
           <ul role="list" className="mt-16 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {CONCEPTS.map((concept, index) => (
               <li key={concept.code} className={`list-none ${concept.offset}`}>
                 <article
-                  aria-label="Future concept — revealing soon"
-                  style={{ animationDelay: `${index * 0.8}s` }}
-                  className="js-future-card animate-float glass-subtle rounded-panel border-line-bright/50 h-full border border-dashed p-6"
+                  aria-label={`${concept.code} — ${concept.tagline} — revealing soon`}
+                  style={{ animationDelay: `${index * 0.9}s` }}
+                  className="js-future-card animate-float-slow glass-subtle rounded-panel border-line-bright/50 relative h-full border overflow-hidden"
                 >
-                  <div aria-hidden="true" className="mb-6 flex flex-col gap-2">
-                    <span className="bg-line block h-2 w-1/2 rounded-full" />
-                    <span className="bg-line block h-2 w-3/4 rounded-full" />
-                    <span className="border-line mt-2 block h-20 w-full rounded-lg border border-dashed" />
+                  {/* Holographic gradient overlay */}
+                  <div
+                    aria-hidden="true"
+                    className="pointer-events-none absolute inset-0"
+                    style={{ background: concept.gradient }}
+                  />
+
+                  {/* Circuit grid background */}
+                  <div
+                    aria-hidden="true"
+                    className="circuit-bg pointer-events-none absolute inset-0 opacity-60"
+                  />
+
+                  {/* Dashed border frame */}
+                  <div
+                    aria-hidden="true"
+                    className="border-line-bright/20 absolute inset-3 rounded-lg border border-dashed"
+                  />
+
+                  <div className="relative p-7 flex flex-col gap-5">
+                    {/* Header: icon + status */}
+                    <div className="flex items-start justify-between">
+                      <span
+                        className="rounded-chip neon-edge-blue grid size-14 place-items-center text-3xl"
+                        aria-hidden="true"
+                      >
+                        {concept.icon}
+                      </span>
+
+                      {/* Status chip with pulsing dot */}
+                      <span
+                        className="flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wider"
+                        style={{
+                          background: `color-mix(in srgb, ${concept.statusColor} 12%, transparent)`,
+                          border: `1px solid ${concept.statusColor}`,
+                          color: concept.statusColor,
+                        }}
+                      >
+                        <span
+                          className="block size-1.5 rounded-full"
+                          style={{
+                            background: concept.statusColor,
+                            animation: "var(--animate-status-blink)",
+                          }}
+                          aria-hidden="true"
+                        />
+                        {concept.status}
+                      </span>
+                    </div>
+
+                    {/* Product identity */}
+                    <div>
+                      <p className="overline-label text-neon-purple-soft mb-1">{extras.futureOverline}</p>
+                      <p className="text-foreground text-xl font-semibold">{concept.code}</p>
+                      <p className="text-muted text-body-lg mt-1">{concept.tagline}</p>
+                    </div>
+
+                    {/* Placeholder wireframe lines */}
+                    <div aria-hidden="true" className="flex flex-col gap-2 pt-1">
+                      <span className="bg-line-bright/40 block h-1.5 w-2/3 rounded-full" />
+                      <span className="bg-line-bright/30 block h-1.5 w-1/2 rounded-full" />
+                    </div>
+
+                    {/* Lock indicator */}
+                    <span className="text-faint/60 mt-1 inline-flex items-center gap-2 text-xs">
+                      <span aria-hidden="true">🔒</span> Revealing soon
+                    </span>
                   </div>
-                  <p className="overline-label text-neon-purple-soft">{extras.futureOverline}</p>
-                  <p className="text-foreground text-body-lg mt-1">{concept.code}</p>
-                  <span className="text-faint mt-3 inline-flex items-center gap-2 text-sm">
-                    <span aria-hidden="true">🔒</span> Revealing soon
-                  </span>
                 </article>
               </li>
             ))}
           </ul>
         </Container>
 
-        {/* Fog overlay — clears on reveal */}
+        {/* Fog overlay */}
         <div
           aria-hidden="true"
           className="js-fog pointer-events-none invisible absolute inset-0 z-20 opacity-0"

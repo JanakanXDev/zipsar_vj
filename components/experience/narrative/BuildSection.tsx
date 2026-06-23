@@ -14,13 +14,8 @@ import { BuildPreview } from "./primitives/BuildPreview";
  * SECTION 4 — Act 2: The Build ("Every Pixel. Every Line. A Purpose.").
  *
  * Pinned horizontal storytelling: vertical scroll drives a horizontal
- * journey through the 4 chapters. Includes a progress line, activating
- * step indicators, and floating UI previews (placeholder wireframes).
- *
- * Reduced motion / no-JS: the viewport defaults to `overflow-x-auto`, so
- * the chapters are a natively scrollable (and keyboard-focusable) row —
- * no content is ever clipped. The motion effect switches it to a pinned,
- * GSAP-translated track. Copy verbatim from the Content Bible.
+ * journey through the 4 chapters. Each card has a large watermark
+ * chapter number for visual depth. Section atmosphere: purple-bleed bottom.
  */
 export function BuildSection() {
   const sectionRef = useRef<HTMLDivElement>(null);
@@ -38,9 +33,9 @@ export function BuildSection() {
 
       const bridge = useExperienceStore.getState();
       const steps = gsap.utils.toArray<HTMLElement>(section.querySelectorAll(".js-act2-step"));
+      const panels = gsap.utils.toArray<HTMLElement>(track.querySelectorAll(".js-act2-panel"));
       const distance = () => Math.max(0, track.scrollWidth - viewport.clientWidth);
 
-      /* Motion mode owns layout: disable native horizontal scroll. */
       viewport.style.overflow = "hidden";
 
       fadeUp(".js-act2-head", { scrollTrigger: { trigger: section, start: "top 80%" } });
@@ -64,6 +59,19 @@ export function BuildSection() {
               Math.floor(self.progress * act2.chapters.length),
             );
             steps.forEach((el, i) => el.classList.toggle("is-active", i <= active));
+
+            /* Blur non-active panels for depth perception */
+            panels.forEach((panel, i) => {
+              const isActive = i === active;
+              const dist = Math.abs(i - active);
+              gsap.to(panel, {
+                filter: `blur(${dist > 0 ? dist * 1.5 : 0}px)`,
+                opacity: isActive ? 1 : Math.max(0.4, 1 - dist * 0.25),
+                duration: 0.4,
+                ease: EASE.arrive,
+                overwrite: "auto",
+              });
+            });
           },
           onToggle: (self) => {
             if (self.isActive) bridge.setActiveSection(act2.id);
@@ -71,8 +79,8 @@ export function BuildSection() {
         },
       });
 
-      /* Reveal each panel's content as it scrolls into view horizontally. */
-      gsap.utils.toArray<HTMLElement>(track.querySelectorAll(".js-act2-panel")).forEach((panel) => {
+      /* Reveal each panel's content as it scrolls into view horizontally */
+      panels.forEach((panel) => {
         gsap.from(panel.querySelectorAll(".js-act2-reveal"), {
           autoAlpha: 0,
           y: 44,
@@ -92,7 +100,7 @@ export function BuildSection() {
   );
 
   return (
-    <Section id={act2.id} labelledBy={`${act2.id}-title`} flush>
+    <Section id={act2.id} labelledBy={`${act2.id}-title`} flush className="section-atmo-build">
       <div ref={sectionRef} className="relative">
         <div className="flex h-svh flex-col gap-6 py-10">
           {/* Header — stays in view while pinned */}
@@ -138,7 +146,7 @@ export function BuildSection() {
             </div>
           </Container>
 
-          {/* Horizontal viewport — native scroll fallback when JS/motion off */}
+          {/* Horizontal viewport */}
           <div
             ref={viewportRef}
             tabIndex={0}
@@ -153,10 +161,20 @@ export function BuildSection() {
               {act2.chapters.map((chapter, index) => (
                 <article
                   key={chapter.number}
-                  className="js-act2-panel flex w-[86vw] shrink-0 flex-col sm:w-[60vw] lg:w-[44vw]"
+                  className="js-act2-panel flex w-[86vw] shrink-0 flex-col sm:w-[60vw] lg:w-[44vw] transition-[filter,opacity]"
                 >
-                  <GlassCard variant="default" padding="lg" className="flex h-full flex-col gap-6">
-                    <div className="flex items-baseline gap-4">
+                  <GlassCard variant="default" padding="lg" className="relative flex h-full flex-col gap-6 overflow-hidden">
+
+                    {/* Large watermark chapter number for visual depth */}
+                    <span
+                      aria-hidden="true"
+                      className="text-aurora pointer-events-none absolute -right-4 -top-6 select-none font-bold opacity-[0.06]"
+                      style={{ fontSize: "clamp(8rem, 18vw, 14rem)", lineHeight: 1 }}
+                    >
+                      {String(chapter.number).padStart(2, "0")}
+                    </span>
+
+                    <div className="relative flex items-baseline gap-4">
                       <span className="js-act2-reveal text-aurora text-display-lg font-semibold">
                         {String(chapter.number).padStart(2, "0")}
                       </span>

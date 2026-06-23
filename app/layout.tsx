@@ -1,7 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Space_Grotesk } from "next/font/google";
 import { SmoothScrollProvider } from "@/components/providers/SmoothScrollProvider";
-import { SkipToContent } from "@/components/ui";
+import { SkipToContent, ScanlineOverlay, CRTVignette, FloatingNav } from "@/components/ui";
 import { brand, seoContent, services } from "@/content/contentBible";
 import "@/styles/globals.css";
 
@@ -61,8 +61,12 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
     <html lang="en" className={spaceGrotesk.variable}>
       <body className="bg-void text-foreground font-sans antialiased">
         <SkipToContent />
+        <ScanlineOverlay />
+        <CRTVignette />
+        <FloatingNav />
         <SmoothScrollProvider>{children}</SmoothScrollProvider>
       </body>
     </html>
   );
 }
+

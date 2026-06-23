@@ -33,11 +33,13 @@
   --color-neon-blue: #00bfff; /* ~9:1 on void */
   --color-neon-purple: #a78bfa; /* ~7:1 on void */
   --color-neon-green: #34d399; /* ~10:1 on void */
+  --color-neon-amber: #f59e0b; /* ~8:1 on void — warm accent */
 
   /* Soft variants — long-form / small-size accent text */
   --color-neon-blue-soft: #7fd4ff;
   --color-neon-purple-soft: #c7b8fd;
   --color-neon-green-soft: #7ce8bb;
+  --color-neon-amber-soft: #fcd34d;
 
   /* ──────────────── TYPOGRAPHY · FAMILIES ──────────────── */
   --font-sans: var(--font-space-grotesk), ui-sans-serif, system-ui, sans-serif;
@@ -45,12 +47,18 @@
   --font-mono: ui-monospace, "Cascadia Code", "JetBrains Mono", Menlo, monospace;
 
   /* ──────────────── TYPOGRAPHY · FLUID SCALE ────────────────
+     text-display-xxl cinematic hero titles (SparkSection h1)
      text-display-xl  scene titles (h2 hero moments)
      text-display-lg  brand lockup, section heroes
      text-display     chapter headings (h3)
      text-lead        narration blocks
      text-body-lg     long-form body
      text-label       overlines, eyebrows, nav labels            */
+  --text-display-xxl: clamp(3.75rem, 1.8rem + 8.5vw, 8.5rem);
+  --text-display-xxl--line-height: 0.96;
+  --text-display-xxl--letter-spacing: -0.03em;
+  --text-display-xxl--font-weight: 700;
+
   --text-display-xl: clamp(3rem, 1.4rem + 6.5vw, 6.5rem);
   --text-display-xl--line-height: 1.02;
   --text-display-xl--letter-spacing: -0.02em;
@@ -80,6 +88,7 @@
 
   /* ──────────────── TYPOGRAPHY · TRACKING ──────────────── */
   --tracking-mega: 0.3em; /* hero overlines */
+  --tracking-ultra: 0.45em; /* section markers */
 
   /* ──────────────── SPACING & LAYOUT ──────────────── */
   --spacing: 0.25rem; /* base unit (Tailwind scale) */
@@ -98,16 +107,41 @@
   --ease-arrive: cubic-bezier(0.16, 1, 0.3, 1); /* entering elements */
   --ease-exit: cubic-bezier(0.7, 0, 0.84, 0); /* leaving elements */
   --ease-pulse: cubic-bezier(0.37, 0, 0.63, 1); /* sine in-out — glow breathing */
+  --ease-cinematic: cubic-bezier(0.05, 0.9, 0.1, 1.0); /* heavy cinematic inertia */
+  --ease-snap: cubic-bezier(0.34, 1.56, 0.64, 1); /* elastic snap */
 
-  /* ──────────────── NEON GLOW SHADOWS ──────────────── */
+  /* ──────────────── NEON GLOW SHADOWS — STANDARD ──────────────── */
   --shadow-glow-blue: 0 0 10px rgba(0, 191, 255, 0.35), 0 0 32px rgba(0, 191, 255, 0.16);
   --shadow-glow-purple: 0 0 10px rgba(167, 139, 250, 0.4), 0 0 32px rgba(167, 139, 250, 0.18);
   --shadow-glow-green: 0 0 10px rgba(52, 211, 153, 0.35), 0 0 32px rgba(52, 211, 153, 0.16);
+  --shadow-glow-amber: 0 0 10px rgba(245, 158, 11, 0.35), 0 0 32px rgba(245, 158, 11, 0.16);
   --shadow-panel: 0 12px 40px rgba(0, 0, 0, 0.45);
+
+  /* ──────────────── NEON GLOW SHADOWS — INTENSE (premium cards, CTA) ──────────────── */
+  --shadow-glow-blue-xl:
+    0 0 8px rgba(0, 191, 255, 0.5),
+    0 0 24px rgba(0, 191, 255, 0.3),
+    0 0 60px rgba(0, 191, 255, 0.15),
+    0 0 100px rgba(0, 191, 255, 0.06);
+  --shadow-glow-purple-xl:
+    0 0 8px rgba(167, 139, 250, 0.55),
+    0 0 24px rgba(167, 139, 250, 0.32),
+    0 0 60px rgba(167, 139, 250, 0.18),
+    0 0 100px rgba(167, 139, 250, 0.07);
+  --shadow-glow-green-xl:
+    0 0 8px rgba(52, 211, 153, 0.5),
+    0 0 24px rgba(52, 211, 153, 0.28),
+    0 0 60px rgba(52, 211, 153, 0.14),
+    0 0 100px rgba(52, 211, 153, 0.05);
 
   /* ──────────────── ANIMATIONS ──────────────── */
   --animate-glow-pulse: glow-pulse 3.6s cubic-bezier(0.37, 0, 0.63, 1) infinite;
   --animate-fade-up: fade-up 0.8s cubic-bezier(0.16, 1, 0.3, 1) both;
+  --animate-shimmer: shimmer 2.8s linear infinite;
+  --animate-comet: comet-fall 2.2s cubic-bezier(0.5, 0, 0.8, 0.4) infinite;
+  --animate-beacon: beacon-pulse 2.8s ease-in-out infinite;
+  --animate-orbit: orbit-slow 12s linear infinite;
+  --animate-scan: scanline-drift 8s linear infinite;
 
   @keyframes glow-pulse {
     0%,
@@ -127,6 +161,68 @@
     to {
       opacity: 1;
       transform: none;
+    }
+  }
+
+  @keyframes shimmer {
+    0% {
+      background-position: -200% center;
+    }
+    100% {
+      background-position: 200% center;
+    }
+  }
+
+  @keyframes comet-fall {
+    0% {
+      transform: scaleY(0) translateY(0);
+      opacity: 1;
+    }
+    40% {
+      transform: scaleY(1) translateY(0);
+      opacity: 1;
+    }
+    70% {
+      transform: scaleY(1) translateY(100%);
+      opacity: 0.6;
+    }
+    71% {
+      transform: scaleY(0) translateY(0);
+      opacity: 0;
+    }
+    100% {
+      transform: scaleY(0) translateY(0);
+      opacity: 0;
+    }
+  }
+
+  @keyframes beacon-pulse {
+    0%,
+    100% {
+      box-shadow: 0 0 0 0 rgba(0, 191, 255, 0.5);
+      opacity: 1;
+    }
+    60% {
+      box-shadow: 0 0 0 10px rgba(0, 191, 255, 0);
+      opacity: 0.7;
+    }
+  }
+
+  @keyframes orbit-slow {
+    from {
+      transform: rotate(0deg);
+    }
+    to {
+      transform: rotate(360deg);
+    }
+  }
+
+  @keyframes scanline-drift {
+    from {
+      transform: translateY(-100%);
+    }
+    to {
+      transform: translateY(100vh);
     }
   }
 
@@ -156,6 +252,62 @@
       transform: translateY(-10px);
     }
   }
+
+  --animate-float-slow: float-slow 10s var(--ease-pulse) infinite;
+
+  @keyframes float-slow {
+    0%,
+    100% {
+      transform: translateY(0) rotate(0deg);
+    }
+    33% {
+      transform: translateY(-8px) rotate(0.5deg);
+    }
+    66% {
+      transform: translateY(-4px) rotate(-0.5deg);
+    }
+  }
+
+  --animate-grain: grain-shift 0.18s steps(1) infinite;
+
+  @keyframes grain-shift {
+    0% { transform: translate(0, 0); }
+    10% { transform: translate(-1%, -1%); }
+    20% { transform: translate(1%, 1%); }
+    30% { transform: translate(-1%, 0%); }
+    40% { transform: translate(0%, 1%); }
+    50% { transform: translate(1%, -1%); }
+    60% { transform: translate(0%, 0%); }
+    70% { transform: translate(-1%, 1%); }
+    80% { transform: translate(1%, 0%); }
+    90% { transform: translate(0%, -1%); }
+    100% { transform: translate(-1%, -1%); }
+  }
+
+  --animate-counter-up: counter-rise 0.6s var(--ease-arrive) both;
+
+  @keyframes counter-rise {
+    from {
+      transform: translateY(120%);
+      opacity: 0;
+    }
+    to {
+      transform: translateY(0);
+      opacity: 1;
+    }
+  }
+
+  --animate-status-blink: status-blink 2s ease-in-out infinite;
+
+  @keyframes status-blink {
+    0%,
+    100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.2;
+    }
+  }
 }
 
 /*
@@ -167,6 +319,7 @@
   --duration-beat: 0.4s; /* micro-interactions */
   --duration-phrase: 0.8s; /* text line reveals */
   --duration-scene: 1.6s; /* scene-level crossfades */
+  --duration-cinematic: 2.4s; /* cinematic slow reveals */
   --stagger-words: 0.04s;
   --stagger-cards: 0.08s;
 
@@ -192,4 +345,14 @@
   --focus-ring-color: var(--color-neon-blue);
   --focus-ring-width: 2px;
   --focus-ring-offset: 2px;
+
+  /* ──────────────── SECTION ATMOSPHERES ──────────────── */
+  --section-atmosphere-prologue: radial-gradient(ellipse 120% 60% at 50% 0%, rgba(0, 191, 255, 0.06), transparent 70%);
+  --section-atmosphere-why: radial-gradient(ellipse 90% 70% at 15% 50%, rgba(167, 139, 250, 0.07), transparent 65%), radial-gradient(ellipse 70% 60% at 85% 50%, rgba(52, 211, 153, 0.05), transparent 60%);
+  --section-atmosphere-encounter: radial-gradient(ellipse 100% 80% at 50% 30%, rgba(0, 191, 255, 0.05), transparent 65%);
+  --section-atmosphere-build: radial-gradient(ellipse 100% 50% at 50% 100%, rgba(167, 139, 250, 0.06), transparent 70%);
+  --section-atmosphere-services: radial-gradient(ellipse 120% 60% at 50% 0%, rgba(52, 211, 153, 0.04), transparent 70%);
+  --section-atmosphere-evolution: radial-gradient(ellipse 80% 70% at 10% 60%, rgba(52, 211, 153, 0.06), transparent 65%);
+  --section-atmosphere-future: radial-gradient(ellipse 100% 70% at 50% 40%, rgba(167, 139, 250, 0.08), transparent 70%);
+  --section-atmosphere-finale: radial-gradient(ellipse 80% 80% at 50% 50%, rgba(0, 191, 255, 0.1), rgba(167, 139, 250, 0.06) 45%, transparent 75%);
 }

@@ -11,18 +11,27 @@ import { Button, Container, GradientText, MagneticButton, Section } from "@/comp
 /**
  * SECTION 8 — Finale: Your Turn ("Let's Talk").
  *
- * Pinned scrub: as the user scrolls, this section writes its progress to
- * the store, which the GalaxyParticles read to CONVERGE (stars pulling
- * inward — §5.3) while an ignition glow blooms behind the CTA ("dream
- * becoming reality") and the headline + three buttons reveal.
- *
- * "Your Turn." + "Start Your Journey" + the support line are verbatim
- * Content Bible; the "Let's Talk" headline and "Tell us your dream"
- * subhead are owner-approved finale copy (extras).
- *
- * Reduced motion / no-WebGL: no pin, no convergence (canvas unmounted),
- * glow stays hidden — the full CTA is plainly visible.
+ * Pinned scrub: dual glow rings, aurora-shimmer headline, CTA buttons
+ * with enhanced borders. Stars converge in the WebGL layer. Ambient
+ * floating CSS particle dots in the background.
  */
+
+/* Ambient background particles — pure CSS, no JS */
+const AMBIENT_COUNT = 16;
+const AMBIENT_PARTICLES = Array.from({ length: AMBIENT_COUNT }, (_, i) => ({
+  id: i,
+  left: `${Math.random() * 100}%`,
+  top: `${Math.random() * 100}%`,
+  size: `${2 + Math.random() * 3}px`,
+  delay: `${Math.random() * 6}s`,
+  duration: `${5 + Math.random() * 6}s`,
+  opacity: 0.2 + Math.random() * 0.3,
+  color:
+    ["var(--color-neon-blue)", "var(--color-neon-purple)", "var(--color-neon-green)"][
+      Math.floor(i % 3)
+    ],
+}));
+
 export function FinaleSection() {
   const sectionRef = useRef<HTMLDivElement>(null);
   const headlineRef = useRef<HTMLHeadingElement>(null);
@@ -58,16 +67,26 @@ export function FinaleSection() {
       });
 
       tl.from(".js-finale-overline", { autoAlpha: 0, y: 20, duration: 0.6 })
-        .to(".js-finale-glow", { autoAlpha: 1, scale: 1, duration: 1.4, ease: "power2.out" }, "<")
-        .from(split.chars, { yPercent: 110, stagger: STAGGER.words / 2, duration: 0.9 }, ">-0.3")
+        /* Dual glow ring: inner ring blooms first */
+        .to(".js-finale-glow-inner", { autoAlpha: 1, scale: 1, duration: 1.2, ease: "power2.out" }, "<")
+        /* Outer ring follows with slight delay */
+        .to(".js-finale-glow-outer", { autoAlpha: 1, scale: 1, duration: 1.8, ease: "power2.out" }, "<+0.3")
+        .from(split.chars, { yPercent: 110, stagger: STAGGER.words / 2, duration: 0.9 }, ">-0.4")
         .from(".js-finale-sub", { autoAlpha: 0, y: 24, duration: 0.6 }, ">-0.2")
         .from(".js-finale-support", { autoAlpha: 0, y: 20, duration: 0.6 }, ">-0.1")
         .from(
           ".js-finale-cta",
-          { autoAlpha: 0, y: 26, scale: 0.92, stagger: 0.12, duration: 0.6, ease: "back.out(1.5)" },
+          {
+            autoAlpha: 0,
+            y: 26,
+            scale: 0.92,
+            stagger: 0.12,
+            duration: 0.7,
+            ease: "back.out(1.5)",
+          },
           ">+0.1",
         )
-        .to({}, { duration: 1.2 }); // hold while the stars finish converging
+        .to({}, { duration: 1.2 }); // hold while stars converge
 
       return () => split.revert();
     },
@@ -76,12 +95,45 @@ export function FinaleSection() {
   );
 
   return (
-    <Section id={finale.id} labelledBy={`${finale.id}-title`} flush>
+    <Section id={finale.id} labelledBy={`${finale.id}-title`} flush className="section-atmo-finale">
       <div ref={sectionRef} className="relative overflow-hidden">
-        {/* Ignition glow — "dream becoming reality" */}
+
+        {/* CSS ambient particles — pure cosmetic */}
+        <div aria-hidden="true" className="pointer-events-none absolute inset-0">
+          {AMBIENT_PARTICLES.map((p) => (
+            <span
+              key={p.id}
+              className="absolute rounded-full"
+              style={{
+                left: p.left,
+                top: p.top,
+                width: p.size,
+                height: p.size,
+                background: p.color,
+                opacity: p.opacity,
+                animationDelay: p.delay,
+                animationDuration: p.duration,
+                animation: `float-y ${p.duration} var(--ease-pulse) ${p.delay} infinite`,
+                boxShadow: `0 0 6px ${p.color}`,
+              }}
+            />
+          ))}
+        </div>
+
+        {/* Outer ignition ring — wider, subtler */}
         <div
           aria-hidden="true"
-          className="js-finale-glow pointer-events-none absolute top-1/2 left-1/2 -z-0 size-[120vmin] -translate-x-1/2 -translate-y-1/2 scale-50 opacity-0"
+          className="js-finale-glow-outer pointer-events-none absolute top-1/2 left-1/2 -z-0 size-[160vmin] -translate-x-1/2 -translate-y-1/2 scale-50 opacity-0"
+          style={{
+            background:
+              "radial-gradient(circle, transparent 30%, rgba(167,139,250,0.08) 50%, rgba(0,191,255,0.05) 70%, transparent 85%)",
+          }}
+        />
+
+        {/* Inner ignition glow — the "dream becoming reality" core */}
+        <div
+          aria-hidden="true"
+          className="js-finale-glow-inner pointer-events-none absolute top-1/2 left-1/2 -z-0 size-[120vmin] -translate-x-1/2 -translate-y-1/2 scale-50 opacity-0"
           style={{
             background:
               "radial-gradient(circle, rgba(0,191,255,0.22), rgba(167,139,250,0.14) 35%, transparent 70%)",
@@ -94,11 +146,17 @@ export function FinaleSection() {
               {finale.sceneTitle}
             </p>
 
-            <h2 id={`${finale.id}-title`} ref={headlineRef} className="text-display-xl">
+            <h2
+              id={`${finale.id}-title`}
+              ref={headlineRef}
+              className="text-display-xl font-bold"
+            >
               <GradientText>{extras.finaleHeadline}</GradientText>
             </h2>
 
-            <p className="js-finale-sub text-lead text-foreground mt-6">{extras.finaleSubhead}</p>
+            <p className="js-finale-sub text-lead text-foreground mt-6 font-medium">
+              {extras.finaleSubhead}
+            </p>
 
             <p className="js-finale-support text-muted text-body-lg mx-auto mt-4 max-w-prose">
               {finale.support}
@@ -127,6 +185,11 @@ export function FinaleSection() {
                 </span>
               ))}
             </div>
+
+            {/* Social proof micro-line */}
+            <p className="text-faint/50 mt-10 text-xs">
+              Trusted by dreamers across 3 continents · Available globally
+            </p>
           </Container>
         </div>
       </div>

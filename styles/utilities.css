@@ -71,6 +71,13 @@
     0 0 24px rgba(52, 211, 153, 0.25);
 }
 
+@utility neon-text-amber {
+  color: var(--color-neon-amber);
+  text-shadow:
+    0 0 6px rgba(245, 158, 11, 0.55),
+    0 0 24px rgba(245, 158, 11, 0.25);
+}
+
 /* ──────────────── NEON EDGES ────────────────
    Glowing borders for panels, chips, and CTAs. Self-contained. */
 
@@ -89,6 +96,29 @@
   box-shadow: var(--shadow-glow-green);
 }
 
+@utility neon-edge-amber {
+  border: 1px solid color-mix(in srgb, var(--color-neon-amber) 45%, transparent);
+  box-shadow: var(--shadow-glow-amber);
+}
+
+/* ──────────────── NEON EDGES — INTENSE ────────────────
+   For CTA buttons and featured cards. */
+
+@utility neon-edge-blue-xl {
+  border: 1px solid color-mix(in srgb, var(--color-neon-blue) 60%, transparent);
+  box-shadow: var(--shadow-glow-blue-xl);
+}
+
+@utility neon-edge-purple-xl {
+  border: 1px solid color-mix(in srgb, var(--color-neon-purple) 60%, transparent);
+  box-shadow: var(--shadow-glow-purple-xl);
+}
+
+@utility neon-edge-green-xl {
+  border: 1px solid color-mix(in srgb, var(--color-neon-green) 60%, transparent);
+  box-shadow: var(--shadow-glow-green-xl);
+}
+
 /* ──────────────── AURORA GRADIENT TEXT ────────────────
    The full neon spectrum in one headline. Display sizes only. */
 
@@ -102,6 +132,24 @@
   background-clip: text;
   -webkit-background-clip: text;
   color: transparent;
+}
+
+/* ──────────────── SHIMMER AURORA ────────────────
+   Animated version — for premium CTA buttons and highlights. */
+
+@utility text-aurora-shimmer {
+  background: linear-gradient(
+    110deg,
+    var(--color-neon-blue) 0%,
+    var(--color-neon-purple) 30%,
+    var(--color-neon-green) 60%,
+    var(--color-neon-blue) 100%
+  );
+  background-size: 200% auto;
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+  animation: var(--animate-shimmer);
 }
 
 /* ──────────────── OVERLINE LABEL ────────────────
@@ -136,4 +184,237 @@
     radial-gradient(ellipse 55% 50% at 82% 25%, rgba(167, 139, 250, 0.1), transparent 60%),
     radial-gradient(ellipse 65% 55% at 50% 95%, rgba(52, 211, 153, 0.06), transparent 60%),
     radial-gradient(ellipse 90% 70% at 50% 50%, rgba(18, 18, 28, 0.55), transparent);
+}
+
+/* ──────────────── DEEP SPACE BACKDROP ────────────────
+   Richer, layered version of bg-nebula for premium sections. */
+
+@utility bg-deep-space {
+  background-color: var(--color-void);
+  background-image:
+    radial-gradient(ellipse 40% 30% at 8% 15%, rgba(0, 191, 255, 0.11), transparent 55%),
+    radial-gradient(ellipse 35% 40% at 92% 20%, rgba(167, 139, 250, 0.12), transparent 55%),
+    radial-gradient(ellipse 50% 40% at 50% 90%, rgba(52, 211, 153, 0.07), transparent 60%),
+    radial-gradient(ellipse 30% 35% at 20% 70%, rgba(167, 139, 250, 0.06), transparent 55%),
+    radial-gradient(ellipse 60% 50% at 80% 75%, rgba(0, 191, 255, 0.05), transparent 60%),
+    radial-gradient(ellipse 90% 70% at 50% 50%, rgba(18, 18, 28, 0.6), transparent);
+}
+
+/* ──────────────── SECTION ATMOSPHERE WASHES ────────────────
+   Per-section ambient color wash injected as ::before pseudo-element.
+   Establishes unique chapter identity without changing the layout. */
+
+@utility section-atmo-prologue {
+  position: relative;
+  &::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background: var(--section-atmosphere-prologue);
+    z-index: 0;
+  }
+}
+
+@utility section-atmo-why {
+  position: relative;
+  &::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background: var(--section-atmosphere-why);
+    z-index: 0;
+  }
+}
+
+@utility section-atmo-encounter {
+  position: relative;
+  &::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background: var(--section-atmosphere-encounter);
+    z-index: 0;
+  }
+}
+
+@utility section-atmo-build {
+  position: relative;
+  &::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background: var(--section-atmosphere-build);
+    z-index: 0;
+  }
+}
+
+@utility section-atmo-services {
+  position: relative;
+  &::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background: var(--section-atmosphere-services);
+    z-index: 0;
+  }
+}
+
+@utility section-atmo-evolution {
+  position: relative;
+  &::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background: var(--section-atmosphere-evolution);
+    z-index: 0;
+  }
+}
+
+@utility section-atmo-future {
+  position: relative;
+  &::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background: var(--section-atmosphere-future);
+    z-index: 0;
+  }
+}
+
+@utility section-atmo-finale {
+  position: relative;
+  &::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background: var(--section-atmosphere-finale);
+    z-index: 0;
+  }
+}
+
+/* ──────────────── HOLOGRAPHIC CARD OVERLAY ────────────────
+   Iridescent shimmer for premium future-product cards. */
+
+@utility holographic {
+  position: relative;
+  overflow: hidden;
+  &::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      135deg,
+      rgba(0, 191, 255, 0.05) 0%,
+      rgba(167, 139, 250, 0.1) 25%,
+      rgba(52, 211, 153, 0.05) 50%,
+      rgba(0, 191, 255, 0.08) 75%,
+      rgba(167, 139, 250, 0.05) 100%
+    );
+    background-size: 200% 200%;
+    animation: var(--animate-shimmer);
+    pointer-events: none;
+    border-radius: inherit;
+  }
+}
+
+/* ──────────────── CIRCUIT GRID PATTERN ────────────────
+   CSS-only futuristic grid pattern for card backgrounds. */
+
+@utility circuit-bg {
+  background-image:
+    linear-gradient(rgba(0, 191, 255, 0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 191, 255, 0.04) 1px, transparent 1px);
+  background-size: 24px 24px;
+}
+
+/* ──────────────── SHIMMER CARD HIGHLIGHT ────────────────
+   Animated highlight that sweeps across premium cards. */
+
+@utility card-shimmer {
+  position: relative;
+  overflow: hidden;
+  &::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 60%;
+    height: 100%;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      rgba(255, 255, 255, 0.04),
+      transparent
+    );
+    transform: skewX(-15deg);
+    transition: left 0.6s var(--ease-arrive);
+    pointer-events: none;
+    z-index: 1;
+  }
+  &:hover::before {
+    left: 150%;
+  }
+}
+
+/* ──────────────── STATUS INDICATOR ────────────────
+   Blinking dot for "IN DEV", "BETA", "SOON" badges. */
+
+@utility status-dot {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  &::before {
+    content: "";
+    display: block;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: currentColor;
+    animation: var(--animate-status-blink);
+  }
+}
+
+/* ──────────────── CORNER ACCENT ────────────────
+   Premium corner marks for vision/mission cards. */
+
+@utility corner-accent-tl {
+  position: relative;
+  &::before {
+    content: "";
+    position: absolute;
+    top: 1rem;
+    left: 1rem;
+    width: 1.5rem;
+    height: 1.5rem;
+    border-top: 1.5px solid currentColor;
+    border-left: 1.5px solid currentColor;
+    border-radius: 3px 0 0 0;
+    pointer-events: none;
+    opacity: 0.4;
+  }
+}
+
+@utility corner-accent-br {
+  position: relative;
+  &::after {
+    content: "";
+    position: absolute;
+    bottom: 1rem;
+    right: 1rem;
+    width: 1.5rem;
+    height: 1.5rem;
+    border-bottom: 1.5px solid currentColor;
+    border-right: 1.5px solid currentColor;
+    border-radius: 0 0 3px 0;
+    pointer-events: none;
+    opacity: 0.4;
+  }
 }

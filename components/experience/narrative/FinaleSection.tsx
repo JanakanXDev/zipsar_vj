@@ -18,14 +18,19 @@ import { Button, Container, GradientText, MagneticButton, Section } from "@/comp
 
 /* Ambient background particles — pure CSS, no JS */
 const AMBIENT_COUNT = 16;
+const seededRandom = (seed: number) => {
+  const x = Math.sin(seed) * 10000;
+  return x - Math.floor(x);
+};
+
 const AMBIENT_PARTICLES = Array.from({ length: AMBIENT_COUNT }, (_, i) => ({
   id: i,
-  left: `${Math.random() * 100}%`,
-  top: `${Math.random() * 100}%`,
-  size: `${2 + Math.random() * 3}px`,
-  delay: `${Math.random() * 6}s`,
-  duration: `${5 + Math.random() * 6}s`,
-  opacity: 0.2 + Math.random() * 0.3,
+  left: `${seededRandom(i * 10 + 1) * 100}%`,
+  top: `${seededRandom(i * 10 + 2) * 100}%`,
+  size: `${2 + seededRandom(i * 10 + 3) * 3}px`,
+  delay: `${seededRandom(i * 10 + 4) * 6}s`,
+  duration: `${5 + seededRandom(i * 10 + 5) * 6}s`,
+  opacity: 0.2 + seededRandom(i * 10 + 6) * 0.3,
   color:
     ["var(--color-neon-blue)", "var(--color-neon-purple)", "var(--color-neon-green)"][
       Math.floor(i % 3)

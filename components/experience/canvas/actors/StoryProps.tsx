@@ -50,11 +50,12 @@ const prepareModel = (scene: THREE.Group) => {
 
 /* ── Earth (z −18): exact Earth GLB asset with textures ── */
 function EarthPlaceholder() {
-  const gltf = useLoader(GLTFLoader, "/models/hello_world.glb");
+  // useGLTF automatically caches and supports Draco compression
+  const { scene: rawScene } = useGLTF("/models/hello_world.glb");
   const ref = useRef<THREE.Group>(null);
 
   const earthScene = useMemo(() => {
-    const scene = gltf.scene.clone(true);
+    const scene = rawScene.clone(true);
     const box = new THREE.Box3().setFromObject(scene);
     const center = box.getCenter(new THREE.Vector3());
     scene.position.sub(center);
@@ -65,17 +66,20 @@ function EarthPlaceholder() {
 
     prepareModel(scene);
     return scene;
-  }, [gltf.scene]);
+  }, [rawScene]);
 
-  useFrame((_, delta) => {
-    if (ref.current) ref.current.rotation.y += delta * 0.05;
+  useFrame((state, delta) => {
+    if (!ref.current) return;
+    ref.current.rotation.y += delta * 0.05;
+    
+    // Performance: Manual LOD / Distance Culling
+    const distance = Math.abs(state.camera.position.z - ref.current.position.z);
+    ref.current.visible = distance < 30; // Only render when within 30 units
   });
 
   return (
     <group ref={ref} position={[0, -0.4, -18]}>
-      <hemisphereLight color="#a8c8ff" groundColor="#101820" intensity={0.35} />
-      <directionalLight position={[6, 10, 4]} intensity={0.8} color="#ffffff" />
-      <pointLight position={[0.6, 1.2, -16]} intensity={0.9} distance={30} color="#ffffff" />
+      {/* Heavy lights removed: relies on global Scene.tsx lighting */}
       <primitive object={earthScene} dispose={null} />
     </group>
   );
@@ -83,16 +87,11 @@ function EarthPlaceholder() {
 
 /* ── Cities (z −38): exact city GLB asset with textures ── */
 function CityPlaceholder() {
-  const gltf = useLoader(GLTFLoader, "/models/city/san_francisco_city-converted.glb");
+  const { scene: rawScene } = useGLTF("/models/city/san_francisco_city-converted.glb");
   const ref = useRef<THREE.Group>(null);
 
-  useEffect(() => {
-    console.log("🏙️ City GLB loaded:", gltf);
-    console.log("🏙️ City scene children:", gltf.scene.children.length);
-  }, [gltf]);
-
   const cityScene = useMemo(() => {
-    const scene = gltf.scene.clone(true);
+    const scene = rawScene.clone(true);
     const box = new THREE.Box3().setFromObject(scene);
     const center = box.getCenter(new THREE.Vector3());
     scene.position.sub(center);
@@ -103,31 +102,24 @@ function CityPlaceholder() {
     const scaledBox = new THREE.Box3().setFromObject(scene);
     scene.position.y -= scaledBox.min.y;
 
-    console.log("🏙️ City bounds before scale:", size);
-    console.log("🏙️ City scale factor:", scale);
-    console.log("🏙️ City position after centering:", scene.position);
-    console.log("🏙️ City scene children to prepare:", scene.children.length);
-
     prepareModel(scene);
-    
-    console.log("🏙️ City after prepareModel:", scene);
     return scene;
-  }, [gltf.scene]);
+  }, [rawScene]);
 
-  useFrame((_, delta) => {
-    if (ref.current) {
-      ref.current.rotation.y = THREE.MathUtils.damp(ref.current.rotation.y, 0.35, 2.0, delta);
-      ref.current.position.x = THREE.MathUtils.damp(ref.current.position.x, 0, 4.0, delta);
-    }
+  useFrame((state, delta) => {
+    if (!ref.current) return;
+    
+    ref.current.rotation.y = THREE.MathUtils.damp(ref.current.rotation.y, 0.35, 2.0, delta);
+    ref.current.position.x = THREE.MathUtils.damp(ref.current.position.x, 0, 4.0, delta);
+    
+    // Performance: Manual LOD / Distance Culling
+    const distance = Math.abs(state.camera.position.z - ref.current.position.z);
+    ref.current.visible = distance < 35; // Only render when within 35 units
   });
 
   return (
     <group ref={ref} position={[0, 0, -38]} rotation={[0, 0.4, 0]}>
-      <ambientLight intensity={0.2} color="#ffffff" />
-      <hemisphereLight color="#accfff" groundColor="#101820" intensity={0.25} />
-      <directionalLight position={[5, 10, -20]} intensity={1.1} color="#f7f1e0" />
-      <pointLight position={[-3, 4, -34]} intensity={0.55} distance={34} color="#77b3ff" />
-      <pointLight position={[4, 3, -36]} intensity={0.55} distance={34} color="#ffb070" />
+      {/* Heavy lights removed: relies on global Scene.tsx lighting */}
       <primitive object={cityScene} dispose={null} />
     </group>
   );
@@ -141,7 +133,12 @@ function DreamerPlaceholder() {
     if (!group) return;
     group.rotation.y += delta * 0.25;
     group.position.y = 0.3 + Math.sin(state.clock.elapsedTime * 0.8) * 0.25;
+    
+    // Performance: Manual LOD / Distance Culling
+    const distance = Math.abs(state.camera.position.z - group.position.z);
+    group.visible = distance < 30;
   });
+  
   return (
     <group ref={ref} position={[0, 0.3, -56]}>
       <mesh>
@@ -158,6 +155,7 @@ function DreamerPlaceholder() {
           depthWrite={false}
         />
       </mesh>
+      {/* Point light retained here because it's essential to the glowing core effect */}
       <pointLight color="#a78bfa" intensity={6} distance={14} decay={2} />
     </group>
   );
@@ -172,3 +170,7 @@ export function StoryProps() {
     </>
   );
 }
+
+// Preload models
+useGLTF.preload("/models/hello_world.glb");
+useGLTF.preload("/models/city/san_francisco_city-converted.glb");

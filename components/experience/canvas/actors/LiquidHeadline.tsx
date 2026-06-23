@@ -6,11 +6,16 @@ import { Center, Environment, Float, MeshTransmissionMaterial, Text3D } from "@r
 import * as THREE from "three";
 import { useExperienceStore } from "@/stores/experienceStore";
 import { prologue } from "@/content/contentBible";
+import { useQualityTier } from "@/hooks/useQualityTier";
 
 export function LiquidHeadline() {
   const groupRef = useRef<THREE.Group>(null);
   const materialRef = useRef<any>(null);
   const lightRef = useRef<THREE.PointLight>(null);
+  
+  // Performance: Get GPU tier to scale heavy material properties
+  const tier = useQualityTier();
+  const isHighEnd = tier === "high";
   
   useFrame((state) => {
     if (!groupRef.current) return;
@@ -45,18 +50,18 @@ export function LiquidHeadline() {
       {/* Dynamic rim light to trace the crystal edges */}
       <pointLight ref={lightRef} intensity={2.5} color="#cceeff" distance={10} decay={2} />
 
-      <Float speed={1.5} rotationIntensity={0.15} floatIntensity={0.2}>
+      <Float speed={isHighEnd ? 1.5 : 0} rotationIntensity={0.15} floatIntensity={0.2}>
         <Center>
           <Text3D
             font="/fonts/helvetiker_bold.typeface.json"
             size={0.7}
-            height={0.4}              // Increased depth for true 3D volume
-            curveSegments={24}        // Smooth out the curves
+            height={0.4}              
+            curveSegments={isHighEnd ? 24 : 12} // Performance: Lower curve geometry on mobile
             bevelEnabled
-            bevelThickness={0.08}     // Thick bevel for rounded convex face
+            bevelThickness={0.08}     
             bevelSize={0.04}
             bevelOffset={0}
-            bevelSegments={12}        // High detail bevel for crystal edges
+            bevelSegments={isHighEnd ? 12 : 4}  // Performance: Lower bevel geometry on mobile
             lineHeight={1.2}
             letterSpacing={-0.02}
           >
@@ -64,18 +69,18 @@ export function LiquidHeadline() {
             
             <MeshTransmissionMaterial
               ref={materialRef}
-              resolution={512}        // Higher res for clean refraction
-              samples={6}
-              thickness={1.5}         // Physical thickness of the glass lens
-              roughness={0.0}         // Flawless polish
-              transmission={1.0}      // 100% glass
-              ior={1.5}               // Real crystal IOR
-              chromaticAberration={0.08} // Stronger dispersion at edges
+              resolution={isHighEnd ? 512 : 256} // Performance: Half resolution FBO on mobile
+              samples={isHighEnd ? 6 : 3}        // Performance: Fewer samples on mobile
+              thickness={1.5}         
+              roughness={0.0}         
+              transmission={1.0}      
+              ior={1.5}               
+              chromaticAberration={0.08} 
               clearcoat={1.0}
               clearcoatRoughness={0.0}
-              backside={true}         // Render inner faces for double-refraction
+              backside={isHighEnd}               // Performance: Disable costly double-refraction on mobile
               backsideThickness={0.5}
-              color="#ffffff"         // Pure clear glass
+              color="#ffffff"         
               attenuationColor="#ffffff"
               attenuationDistance={10}
             />

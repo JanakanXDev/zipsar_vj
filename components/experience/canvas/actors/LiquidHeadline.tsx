@@ -18,8 +18,8 @@ export function LiquidHeadline() {
     const progress = useExperienceStore.getState().sectionProgress["prologue"] ?? 0;
     
     // Fly up and back as we scroll
-    groupRef.current.position.y = 1.5 + progress * 20;
-    groupRef.current.position.z = -2 - progress * 10;
+    groupRef.current.position.y = 0.5 + progress * 20;
+    groupRef.current.position.z = -3 - progress * 10;
     
     // Tilt up as it flies away
     groupRef.current.rotation.x = progress * 0.8;
@@ -29,39 +29,38 @@ export function LiquidHeadline() {
   const formattedText = prologue.sceneTitle.replace("Needs More", "Needs More\n");
 
   return (
-    <group ref={groupRef} position={[0, 1.5, -2]}>
-      <Float speed={1.5} rotationIntensity={0.15} floatIntensity={0.4}>
-        <Center top>
+    <group ref={groupRef} position={[0, 0.5, -3]}>
+      <Float speed={1.5} rotationIntensity={0.15} floatIntensity={0.2}>
+        <Center>
           <Text3D
             font="/fonts/helvetiker_bold.typeface.json"
-            size={1.4}
-            height={0.4}
-            curveSegments={32}
+            size={0.65}
+            height={0.15}
+            curveSegments={12}
             bevelEnabled
-            bevelThickness={0.06}
-            bevelSize={0.03}
+            bevelThickness={0.02}
+            bevelSize={0.015}
             bevelOffset={0}
-            bevelSegments={8}
-            lineHeight={0.9}
-            letterSpacing={-0.03}
+            bevelSegments={3}
+            lineHeight={1.1}
+            letterSpacing={-0.02}
           >
             {formattedText}
             
             <MeshTransmissionMaterial
               ref={materialRef}
-              backside
-              backsideThickness={1.0}
-              thickness={1.5}
-              roughness={0.08}
+              resolution={256}
+              samples={4}
+              thickness={0.5}
+              roughness={0.1}
               transmission={1.0}
-              ior={1.4}
-              chromaticAberration={0.06}
-              anisotropy={0.2}
+              ior={1.2}
+              chromaticAberration={0.04}
               clearcoat={1}
               clearcoatRoughness={0.1}
-              color="#e6f2ff"
+              color="white"
               attenuationColor="#a6d4ff"
-              attenuationDistance={2}
+              attenuationDistance={5}
             />
           </Text3D>
         </Center>

@@ -17,12 +17,12 @@ export function LiquidHeadline() {
     // Get prologue progress (0 = top, 1 = scrolled out)
     const progress = useExperienceStore.getState().sectionProgress["prologue"] ?? 0;
     
-    // Fly up and back as we scroll
-    groupRef.current.position.y = 0.5 + progress * 20;
-    groupRef.current.position.z = -3 - progress * 10;
+    // Fly up and towards the camera (penetrate the screen) as we scroll
+    groupRef.current.position.y = 0.5 + progress * 10;
+    groupRef.current.position.z = -3 + progress * 15; // +Z moves it towards the camera
     
     // Tilt up as it flies away
-    groupRef.current.rotation.x = progress * 0.8;
+    groupRef.current.rotation.x = progress * 0.5;
   });
 
   // Split text into two lines for better visual composition
@@ -34,14 +34,14 @@ export function LiquidHeadline() {
         <Center>
           <Text3D
             font="/fonts/helvetiker_bold.typeface.json"
-            size={0.65}
-            height={0.15}
+            size={0.95}
+            height={0.2}
             curveSegments={12}
             bevelEnabled
-            bevelThickness={0.02}
-            bevelSize={0.015}
+            bevelThickness={0.03}
+            bevelSize={0.02}
             bevelOffset={0}
-            bevelSegments={3}
+            bevelSegments={4}
             lineHeight={1.1}
             letterSpacing={-0.02}
           >
@@ -51,16 +51,16 @@ export function LiquidHeadline() {
               ref={materialRef}
               resolution={256}
               samples={4}
-              thickness={0.5}
-              roughness={0.1}
-              transmission={1.0}
-              ior={1.2}
-              chromaticAberration={0.04}
+              thickness={0.2}
+              roughness={0.15}
+              transmission={0.85} // Lowered slightly so the bright color shows through
+              ior={1.3}
+              chromaticAberration={0.05}
               clearcoat={1}
               clearcoatRoughness={0.1}
-              color="white"
-              attenuationColor="#a6d4ff"
-              attenuationDistance={5}
+              color="#aaddff" // Bright icy blue to make it highly visible against black space
+              attenuationColor="#ffffff"
+              attenuationDistance={10}
             />
           </Text3D>
         </Center>

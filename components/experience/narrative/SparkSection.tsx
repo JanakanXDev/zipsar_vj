@@ -184,7 +184,7 @@ export function SparkSection() {
             <h1
               id={`${prologue.id}-title`}
               ref={headlineRef}
-              className="text-display-xxl font-bold"
+              className="text-display-xxl font-bold text-liquid-glass"
             >
               {prologue.sceneTitle}
             </h1>

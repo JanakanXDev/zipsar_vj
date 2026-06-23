@@ -25,8 +25,8 @@ export function LiquidHeadline() {
     groupRef.current.rotation.x = progress * 0.5;
   });
 
-  // Split text into two lines for better visual composition
-  const formattedText = prologue.sceneTitle.replace("Needs More", "Needs More\n");
+  // Split text into three lines to fit the screen
+  const formattedText = "The World\nNeeds More\nDreamers";
 
   return (
     <group ref={groupRef} position={[0, 0.5, -3]}>
@@ -34,7 +34,7 @@ export function LiquidHeadline() {
         <Center>
           <Text3D
             font="/fonts/helvetiker_bold.typeface.json"
-            size={0.95}
+            size={0.7}
             height={0.2}
             curveSegments={12}
             bevelEnabled
@@ -42,7 +42,7 @@ export function LiquidHeadline() {
             bevelSize={0.02}
             bevelOffset={0}
             bevelSegments={4}
-            lineHeight={1.1}
+            lineHeight={1.2}
             letterSpacing={-0.02}
           >
             {formattedText}

@@ -9,7 +9,6 @@ import { useQualityTier } from "@/hooks/useQualityTier";
 
 export function LiquidHeadline() {
   const groupRef = useRef<THREE.Group>(null);
-  const materialRef = useRef<THREE.Material>(null);
   const lightRef = useRef<THREE.PointLight>(null);
   
   // Performance: Get GPU tier to scale heavy material properties
@@ -67,7 +66,6 @@ export function LiquidHeadline() {
             {formattedText}
             
             <MeshTransmissionMaterial
-              ref={materialRef}
               resolution={isHighEnd ? 512 : 256} // Performance: Half resolution FBO on mobile
               samples={isHighEnd ? 6 : 3}        // Performance: Fewer samples on mobile
               thickness={1.5}         
